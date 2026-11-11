@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "drift-detect"
+version = "0.1.0"
+description = "Contrato de dados e baseline não supervisionado para o German Credit Data."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "joblib>=1.4,<2",
+  "evidently>=0.7,<0.8",
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<3",
+  "pandera[pandas]>=0.22,<0.30",
+  "scikit-learn>=1.5,<2",
+  "scipy>=1.11,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9",
+  "ruff>=0.8,<1",
+]
+
+[project.scripts]
+drift-detect = "drift_detect.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/drift_detect"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+

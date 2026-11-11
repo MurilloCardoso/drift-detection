@@ -1,0 +1,20 @@
+.venv/
+.uv-cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Artefatos reproduzíveis gerados pelo pipeline
+artifacts/model/*.joblib
+
+# Arquivos auxiliares usados apenas para leitura do enunciado
+cdp_extract.mjs
+extract_pdf_ocr.ps1
+tech_challenge_fase4.txt
+
