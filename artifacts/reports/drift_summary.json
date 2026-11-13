@@ -1,0 +1,121 @@
+{
+  "generated_at_utc": "2026-11-13T00:14:50.531560+00:00",
+  "reference_rows": 1000,
+  "production_rows": 1000,
+  "simulation": {
+    "age": "round(min(100, age * 1.20 + 5))",
+    "credit_amount": "round(min(2000000, credit_amount * 1.80 + 1000))"
+  },
+  "thresholds": {
+    "psi": 0.1,
+    "ks_alpha": 0.05
+  },
+  "drifted_columns": [
+    "age",
+    "anomaly_score",
+    "credit_amount"
+  ],
+  "reference_anomaly_rate": 0.05,
+  "production_anomaly_rate": 0.083,
+  "metrics": [
+    {
+      "column": "age",
+      "column_type": "numeric",
+      "psi": 3.886046,
+      "psi_drift_detected": true,
+      "ks_statistic": 0.426,
+      "ks_p_value": 0.0,
+      "ks_drift_detected": true
+    },
+    {
+      "column": "credit_amount",
+      "column_type": "numeric",
+      "psi": 3.398511,
+      "psi_drift_detected": true,
+      "ks_statistic": 0.487,
+      "ks_p_value": 0.0,
+      "ks_drift_detected": true
+    },
+    {
+      "column": "duration",
+      "column_type": "numeric",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": 0.0,
+      "ks_p_value": 1.0,
+      "ks_drift_detected": false
+    },
+    {
+      "column": "anomaly_score",
+      "column_type": "numeric",
+      "psi": 0.080909,
+      "psi_drift_detected": false,
+      "ks_statistic": 0.106,
+      "ks_p_value": 2.59759e-05,
+      "ks_drift_detected": true
+    },
+    {
+      "column": "sex",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "job",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "housing",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "saving_accounts",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "checking_account",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "purpose",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "anomaly_label",
+      "column_type": "categorical",
+      "psi": 0.017892,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    }
+  ]
+}

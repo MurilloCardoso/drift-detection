@@ -1,4 +1,4 @@
-# Drift Detect · Etapas 1 e 2
+# Drift Detect · Etapas 1, 2 e 3
 
 > Validação, baseline não supervisionado e detecção de drift no German Credit Data  
 > Tech Challenge — Machine Learning Engineering, Fase 4
@@ -20,6 +20,11 @@ intencionalmente `age` e `credit_amount`, gera predições com o baseline e comp
 lote com a referência. O Evidently produz o relatório interativo, enquanto um resumo
 auditável registra PSI para todas as variáveis e Kolmogorov-Smirnov para as numéricas.
 
+Na Etapa 3, cada comando também produz logs estruturados em JSON Lines. Uma execução
+monitorada mede status, latência, volume processado e alertas por tarefa, preserva o
+histórico entre execuções e atualiza um dashboard HTML autocontido. Assim, a solução
+pode ser demonstrada localmente sem conta em serviço externo ou infraestrutura ativa.
+
 ## Fluxo
 
 ```mermaid
@@ -36,6 +41,9 @@ flowchart LR
     K --> N[Evidently + PSI/KS]
     M --> N
     N --> O[(Relatório HTML)]
+    O --> P[Coleta de métricas operacionais]
+    P --> Q[(Histórico JSONL)]
+    P --> R[(Dashboard de monitoramento)]
     B --> H[Injeção de falhas]
     H --> I{Contrato Pandera}
     I -->|Reprovado| J[(Failure cases CSV)]
@@ -50,6 +58,7 @@ No Windows:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\run_stage1.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\run_stage2.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\run_stage3.ps1
 ```
 
 No Linux ou macOS:
@@ -57,6 +66,7 @@ No Linux ou macOS:
 ```bash
 sh scripts/run_stage1.sh
 sh scripts/run_stage2.sh
+sh scripts/run_stage3.sh
 ```
 
 Execução manual:
@@ -78,6 +88,9 @@ uv run drift-detect demo
 
 # Simula produção, gera predições e produz o relatório de drift
 uv run drift-detect drift
+
+# Executa o pipeline completo com métricas, histórico e dashboard operacional
+uv run drift-detect monitor
 ```
 
 ## Dados e contrato
@@ -136,6 +149,27 @@ Esses resultados medem mudança de distribuição e de comportamento do detector
 CSV não possui alvo real, eles não demonstram concept drift nem queda de qualidade
 preditiva; isso exigiria rótulos observados ao longo do tempo.
 
+## Observabilidade operacional
+
+O comando `monitor` executa três tarefas observáveis: validação do contrato, verificação
+de prontidão do modelo (treino ou reutilização) e análise de drift. Cada execução recebe
+um `run_id` e registra:
+
+- status geral e por tarefa (`success` ou `failed`);
+- latência total e de cada tarefa em segundos;
+- volume de registros processados;
+- quantidade de alertas e features com drift;
+- taxas de anomalia da referência e da produção;
+- tipo, mensagem e etapa da falha, quando houver.
+
+Os eventos de todos os comandos da CLI são centralizados em `pipeline.jsonl`. As
+métricas de cada execução monitorada são acrescentadas a `metrics_history.jsonl`, sem
+apagar o histórico anterior. O dashboard interativo mostra os indicadores da última
+execução, os testes PSI/KS, até 20 execuções recentes e permite filtrar o histórico por
+status. Um alerta de drift descreve degradação
+estatística, não falha técnica: por isso a execução pode terminar com status de sucesso
+e, ao mesmo tempo, exibir alertas que exigem investigação.
+
 ## Artefatos
 
 | Caminho | Descrição |
@@ -151,6 +185,9 @@ preditiva; isso exigiria rótulos observados ao longo do tempo.
 | `artifacts/reports/drift_report.html` | relatório interativo do Evidently |
 | `artifacts/reports/evidently_drift_report.json` | saída estruturada do Evidently |
 | `artifacts/reports/drift_summary.json` | PSI, KS, limiares e colunas detectadas |
+| `artifacts/observability/pipeline.jsonl` | logs estruturados centralizados da CLI |
+| `artifacts/observability/metrics_history.jsonl` | histórico de saúde das execuções monitoradas |
+| `artifacts/reports/monitoring_dashboard.html` | dashboard operacional autocontido da Etapa 3 |
 
 ## Qualidade
 
@@ -162,7 +199,8 @@ uv run ruff check .
 Os testes usam o próprio `german_credit_data.csv`, verificam a normalização dos
 cabeçalhos, os nulos permitidos, as regras categóricas e numéricas, o acúmulo de
 falhas, a criação de um pipeline carregável, a simulação válida e a detecção das duas
-features intencionalmente deslocadas.
+features intencionalmente deslocadas. Também cobrem a leitura resiliente do histórico
+de monitoramento e a presença dos indicadores operacionais no dashboard.
 
 ## Limitação conhecida
 

@@ -1,0 +1,13 @@
+{
+  "generated_at_utc": "2026-11-13T00:13:17.977022+00:00",
+  "model_type": "IsolationForest",
+  "contract_status": "passed",
+  "dataset_rows": 1000,
+  "anomaly_count": 50,
+  "anomaly_rate": 0.05,
+  "contamination": 0.05,
+  "score_min": -0.108404,
+  "score_mean": 0.097511,
+  "score_max": 0.190032,
+  "random_state": 42
+}

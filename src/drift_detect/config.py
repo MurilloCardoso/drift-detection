@@ -56,6 +56,18 @@ class ProjectPaths:
     def drift_summary(self) -> Path:
         return self.root / "artifacts" / "reports" / "drift_summary.json"
 
+    @property
+    def pipeline_log(self) -> Path:
+        return self.root / "artifacts" / "observability" / "pipeline.jsonl"
+
+    @property
+    def monitoring_history(self) -> Path:
+        return self.root / "artifacts" / "observability" / "metrics_history.jsonl"
+
+    @property
+    def monitoring_dashboard(self) -> Path:
+        return self.root / "artifacts" / "reports" / "monitoring_dashboard.html"
+
 
 def default_paths() -> ProjectPaths:
     """Retorna caminhos ancorados na raiz do checkout atual."""

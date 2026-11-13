@@ -14,6 +14,7 @@ from drift_detect.config import ProjectPaths, default_paths
 from drift_detect.contracts import failure_cases_from, validate_csv
 from drift_detect.data import write_invalid_batch
 from drift_detect.drift import run_drift_analysis
+from drift_detect.observability import add_json_file_handler, run_monitored_pipeline
 from drift_detect.training import train_baseline
 
 LOGGER = logging.getLogger("drift_detect")
@@ -136,6 +137,9 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "drift", help="Executa a simulação e a detecção de drift da Etapa 2."
     )
+    subparsers.add_parser(
+        "monitor", help="Executa e monitora o pipeline completo da Etapa 3."
+    )
     return parser
 
 
@@ -143,6 +147,7 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     _configure_logging(args.verbose)
     paths = default_paths()
+    add_json_file_handler(paths.pipeline_log)
 
     try:
         if args.command == "prepare":
@@ -155,6 +160,8 @@ def main(argv: list[str] | None = None) -> int:
             run_demo(paths)
         elif args.command == "drift":
             run_drift(paths)
+        elif args.command == "monitor":
+            run_monitored_pipeline(paths)
         return 0
     except SchemaErrors as error:
         LOGGER.error("INGESTÃO BLOQUEADA pelo contrato: %d violações", len(error.failure_cases))

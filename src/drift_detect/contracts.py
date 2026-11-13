@@ -9,7 +9,6 @@ import pandas as pd
 import pandera.pandas as pa
 from pandera.errors import SchemaErrors
 
-
 NUMERIC_FEATURES = ["age", "credit_amount", "duration"]
 CATEGORICAL_FEATURES = [
     "sex",

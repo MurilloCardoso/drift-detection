@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drift Detect - Monitoramento</title><style>
+:root{--bg:#0b1020;--panel:#151c31;--line:#2a3556;--text:#f3f6ff;--muted:#aab5d1;--green:#3ddc97;--red:#ff6b7a;--blue:#76a9ff}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px system-ui,sans-serif} main{max-width:1180px;margin:auto;padding:32px 20px 60px}
+h1{margin:0 0 6px;font-size:30px} h2{margin:28px 0 12px;font-size:19px} .subtitle{color:var(--muted)} .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+.card,.table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:12px} .card{padding:18px} .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em} .value{font-size:25px;font-weight:700;margin-top:8px}
+.table-wrap{overflow:auto} table{width:100%;border-collapse:collapse} th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap} th{color:var(--muted);font-size:12px;text-transform:uppercase} tr:last-child td{border:0}
+.status{padding:4px 8px;border-radius:99px;background:#27304a} .status.success{color:var(--green);background:#14382e} .status.failed,.status.alert{color:var(--red);background:#421f2a} code{color:var(--blue)} .note{color:var(--muted);margin-top:28px} @media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
+.toolbar{display:flex;justify-content:flex-end;margin:-42px 0 12px} select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+</style></head><body><main>
+<h1>Saúde do pipeline</h1><div class="subtitle">Observabilidade local das etapas de validação, modelo e detecção de drift.</div>
+<section class="grid">
+<div class="card"><div class="label">Último status</div><div class="value">success</div></div>
+<div class="card"><div class="label">Taxa de sucesso</div><div class="value">100.0%</div></div>
+<div class="card"><div class="label">Latência total</div><div class="value">2.73s</div></div>
+<div class="card"><div class="label">Alertas de drift</div><div class="value">3</div></div>
+</section>
+<h2>Última execução</h2><div class="table-wrap"><table><thead><tr><th>Tarefa</th><th>Status</th><th>Latência</th><th>Volume</th></tr></thead><tbody><tr><td>data_validation</td><td><span class="status success">success</span></td><td>0.026s</td><td>1000</td></tr><tr><td>model_readiness</td><td><span class="status success">success</span></td><td>0.000s</td><td>-</td></tr><tr><td>drift_analysis</td><td><span class="status success">success</span></td><td>2.699s</td><td>1000</td></tr></tbody></table></div>
+<h2>Alertas estatísticos</h2><div class="table-wrap"><table><thead><tr><th>Feature</th><th>PSI</th><th>KS p-value</th><th>Estado</th></tr></thead><tbody><tr><td>age</td><td>3.8860</td><td>0.0</td><td><span class="status alert">alerta</span></td></tr><tr><td>credit_amount</td><td>3.3985</td><td>0.0</td><td><span class="status alert">alerta</span></td></tr><tr><td>duration</td><td>0.0000</td><td>1.0</td><td><span class="status success">estável</span></td></tr><tr><td>anomaly_score</td><td>0.0809</td><td>2.59759e-05</td><td><span class="status alert">alerta</span></td></tr><tr><td>sex</td><td>0.0000</td><td>None</td><td><span class="status success">estável</span></td></tr><tr><td>job</td><td>0.0000</td><td>None</td><td><span class="status success">estável</span></td></tr><tr><td>housing</td><td>0.0000</td><td>None</td><td><span class="status success">estável</span></td></tr><tr><td>saving_accounts</td><td>0.0000</td><td>None</td><td><span class="status success">estável</span></td></tr><tr><td>checking_account</td><td>0.0000</td><td>None</td><td><span class="status success">estável</span></td></tr><tr><td>purpose</td><td>0.0000</td><td>None</td><td><span class="status success">estável</span></td></tr><tr><td>anomaly_label</td><td>0.0179</td><td>None</td><td><span class="status success">estável</span></td></tr></tbody></table></div>
+<h2>Histórico (20 execuções)</h2><div class="toolbar"><label>Status: <select id="statusFilter"><option value="all">todos</option><option value="success">sucesso</option><option value="failed">falha</option></select></label></div><div class="table-wrap"><table><thead><tr><th>Run ID</th><th>Início UTC</th><th>Status</th><th>Latência</th><th>Volume</th><th>Alertas</th><th>Features</th></tr></thead><tbody id="runHistory"><tr data-status="success"><td><code>5605c2080b9e</code></td><td>2026-11-13T00:14:47.807798+00:00</td><td><span class="status success">success</span></td><td>2.725s</td><td>1000</td><td>3</td><td>age, anomaly_score, credit_amount</td></tr><tr data-status="success"><td><code>73f398975038</code></td><td>2026-11-13T00:13:52.233424+00:00</td><td><span class="status success">success</span></td><td>2.895s</td><td>1000</td><td>3</td><td>age, anomaly_score, credit_amount</td></tr><tr data-status="success"><td><code>972dc6494441</code></td><td>2026-11-13T00:13:17.550117+00:00</td><td><span class="status success">success</span></td><td>12.191s</td><td>1000</td><td>3</td><td>age, anomaly_score, credit_amount</td></tr></tbody></table></div>
+<p class="note">Taxas de anomalia: referência 5.00% · produção 8.30%. Features em alerta: age, anomaly_score, credit_amount.</p>
+</main><script>
+const filter = document.getElementById('statusFilter');
+filter.addEventListener('change', () => document.querySelectorAll('#runHistory tr[data-status]').forEach(row => {
+  row.hidden = filter.value !== 'all' && row.dataset.status !== filter.value;
+}));
+</script></body></html>
