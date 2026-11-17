@@ -108,6 +108,3 @@ O conjunto de dados é público, mas atributos de crédito vinculáveis a indiv�
 
 A intervenção nas duas variáveis causa o drift medido **neste lote sintético**. Ela não demonstra que inflação real altera risco de crédito, nem que a qualidade de decisões cairia em um sistema real. Essas conclusões exigiriam desfechos futuros observados, desenho temporal e controle de fatores de confusão.
 
-## Apresentação STAR
-
-**Vídeo:** pendente de gravação e publicação pelo grupo. Roteiro sugerido, de até cinco minutos: **situação** — risco de degradação silenciosa; **tarefa** — validar, classificar, detectar drift e discutir governança; **ação** — demonstrar `demo`, `drift` e `monitor`; **resultado** — apresentar métricas de teste, rejeição do lote inválido, alertas e limites da simulação.
