@@ -16,10 +16,10 @@ Pipeline local de validação de dados, classificação de risco de crédito, de
 **Pré-requisitos:** Python 3.11, 3.12 ou 3.13 e [`uv`](https://docs.astral.sh/uv/) instalado. Execute os comandos na **raiz do repositório**, pois os caminhos de entrada e saída são resolvidos a partir do diretório atual.
 
 ```bash
-uv sync --extra dev
-uv run drift-detect demo
-uv run drift-detect drift
-uv run drift-detect monitor
+uv sync --extra dev --locked
+uv run --locked drift-detect demo
+uv run --locked drift-detect drift
+uv run --locked drift-detect monitor
 ```
 
 Ao concluir, abra `artifacts/reports/statlog_drift_report.html` para a análise de drift e `artifacts/reports/statlog_monitoring_dashboard.html` para o monitoramento. Os relatórios JSON e CSV ficam nos mesmos diretórios indicados em [Arquivos gerados](#arquivos-gerados).
@@ -96,9 +96,11 @@ Use `uv run drift-detect --help` para ver as opções e `uv run drift-detect --v
 ## Qualidade e reprodução
 
 ```bash
-uv run pytest
-uv run ruff check .
+uv run --locked --extra dev pytest
+uv run --locked --extra dev ruff check .
 ```
+
+Para reproduzir os resultados de referência, use Python 3.12 (definido em `.python-version`), o arquivo `dataset/statlog/german.data` versionado e o `uv.lock`. Execute a sequência acima em um checkout limpo. A opção `--locked` interrompe a execução se as dependências declaradas exigirem alterar o lockfile. O teste `test_reproducibility.py` confere o SHA-256 do dataset, as métricas do baseline e os alertas e taxas de predição do drift contra os relatórios versionados. Datas de geração, duração, logs, histórico de monitoramento, HTML e bytes do modelo variam entre execuções; compare os campos numéricos e alertas verificados pelo teste.
 
 O [workflow de CI](.github/workflows/ci.yml) executa testes, lint e os comandos `demo`, `drift` e `monitor` em Python 3.12, depois publica relatórios, logs e predições como artefatos da execução. Os resultados locais podem variar se as dependências ou os dados de entrada forem alterados.
 

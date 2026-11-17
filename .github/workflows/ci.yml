@@ -9,19 +9,19 @@ permissions:
 
 jobs:
   quality-and-evidence:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.12"
           enable-cache: true
-      - run: uv sync --extra dev
-      - run: uv run ruff check .
-      - run: uv run pytest
-      - run: uv run drift-detect demo
-      - run: uv run drift-detect drift
-      - run: uv run drift-detect monitor
+      - run: uv sync --extra dev --locked
+      - run: uv run --locked --extra dev ruff check .
+      - run: uv run --locked --extra dev pytest
+      - run: uv run --locked drift-detect demo
+      - run: uv run --locked drift-detect drift
+      - run: uv run --locked drift-detect monitor
       - uses: actions/upload-artifact@v4
         if: always()
         with:
