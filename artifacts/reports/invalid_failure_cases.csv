@@ -1,0 +1,15 @@
+schema_context,column,check,check_number,failure_case,index
+Column,age,"in_range(18, 100)",0,17,0
+Column,checking_account,"isin(['little', 'moderate', 'rich'])",0,invalid,5
+Column,credit_amount,"in_range(1, 2000000)",0,-500,6
+Column,customer_id,field_uniqueness,,10,9
+Column,customer_id,field_uniqueness,,10,10
+Column,customer_id,field_uniqueness,,11,11
+Column,customer_id,field_uniqueness,,11,12
+Column,duration,"in_range(1, 120)",0,0,7
+DataFrameSchema,german_credit_contract_v1,o lote contém linhas exatamente duplicadas,0,False,
+Column,housing,"isin(['free', 'own', 'rent'])",0,hotel,3
+Column,job,"isin([0, 1, 2, 3])",0,9,2
+Column,purpose,"isin(['business', 'car', 'domestic appliances', 'education', 'furniture/equipment', 'radio/TV', 'repairs', 'vacation/others'])",0,unknown,8
+Column,saving_accounts,"isin(['little', 'moderate', 'quite rich', 'rich'])",0,invalid,4
+Column,sex,"isin(['female', 'male'])",0,unknown,1

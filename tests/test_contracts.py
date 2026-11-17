@@ -6,77 +6,38 @@ import pandas as pd
 import pytest
 from pandera.errors import SchemaErrors
 
-from drift_detect.contracts import validate_credit_data, validate_csv
+from drift_detect.contracts import FEATURE_COLUMNS, validate_credit_data, validate_csv
 from drift_detect.data import generate_invalid_batch
 
 
-def test_contract_accepts_german_credit_dataset(dataset_path: Path) -> None:
-    validated, result = validate_csv(dataset_path)
-
-    assert len(validated) == 1_000
-    assert list(validated.columns) == [
-        "customer_id",
-        "age",
-        "sex",
-        "job",
-        "housing",
-        "saving_accounts",
-        "checking_account",
-        "credit_amount",
-        "duration",
-        "purpose",
-    ]
-    assert result.missing_values == 577
-    assert result.duplicate_rows == 0
-    assert result.contract == "german_credit_contract_v1"
+def test_official_zip_has_independent_contract(dataset_path: Path) -> None:
+    frame, result = validate_csv(dataset_path)
+    assert len(frame) == 1000
+    assert len(FEATURE_COLUMNS) == 20
+    assert result.columns == 22
+    assert result.missing_values == 0
+    assert frame["credit_risk"].value_counts().to_dict() == {1: 700, 2: 300}
+    assert result.contract == "statlog_german_credit_contract_v1"
 
 
-@pytest.mark.parametrize(
-    ("column", "value"),
-    [
-        ("age", 17),
-        ("sex", "unknown"),
-        ("job", 9),
-        ("housing", "hotel"),
-        ("saving_accounts", "invalid"),
-        ("checking_account", "invalid"),
-        ("credit_amount", -1),
-        ("duration", 0),
-        ("purpose", "unknown"),
-    ],
-)
-def test_contract_rejects_invalid_values(
-    valid_frame: pd.DataFrame, column: str, value: object
-) -> None:
+@pytest.mark.parametrize(("column", "value"), [
+    ("age", 17), ("duration", 0), ("credit_amount", -1),
+    ("checking_status", "invalid"), ("credit_risk", 3),
+])
+def test_contract_rejects_invalid_values(valid_frame: pd.DataFrame, column: str,
+                                         value: object) -> None:
     batch = valid_frame.head(20).copy()
     batch.loc[batch.index[0], column] = value
-
     with pytest.raises(SchemaErrors):
         validate_credit_data(batch)
 
 
-def test_contract_allows_documented_missing_accounts(valid_frame: pd.DataFrame) -> None:
-    batch = valid_frame.head(20).copy()
-    batch.loc[batch.index[0], ["saving_accounts", "checking_account"]] = None
-
-    validated, _ = validate_credit_data(batch)
-
-    assert pd.isna(validated.loc[batch.index[0], "saving_accounts"])
-    assert pd.isna(validated.loc[batch.index[0], "checking_account"])
-
-
-def test_contract_rejects_duplicate_customer_id(valid_frame: pd.DataFrame) -> None:
-    batch = valid_frame.head(20).copy()
-    batch.loc[batch.index[0], "customer_id"] = batch.loc[batch.index[1], "customer_id"]
-
+def test_contract_rejects_legacy_columns(valid_frame: pd.DataFrame) -> None:
     with pytest.raises(SchemaErrors):
-        validate_credit_data(batch)
+        validate_credit_data(valid_frame.head(20).rename(columns={"record_id": "customer_id"}))
 
 
-def test_invalid_demo_batch_accumulates_multiple_failures(valid_frame: pd.DataFrame) -> None:
-    invalid = generate_invalid_batch(valid_frame)
-
+def test_invalid_batch_accumulates_failures(valid_frame: pd.DataFrame) -> None:
     with pytest.raises(SchemaErrors) as captured:
-        validate_credit_data(invalid)
-
+        validate_credit_data(generate_invalid_batch(valid_frame))
     assert len(captured.value.failure_cases) >= 10

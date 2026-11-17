@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "contract": "german_credit_contract_v1",
+  "rows": 1000,
+  "columns": 10,
+  "duplicate_rows": 0,
+  "missing_values": 577
+}

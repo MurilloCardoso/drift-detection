@@ -1,0 +1,220 @@
+{
+  "generated_at_utc": "2026-11-16T23:56:53.290058+00:00",
+  "reference_rows": 1000,
+  "production_rows": 1000,
+  "simulation": {
+    "age": "round(min(100, age * 1.20 + 5))",
+    "credit_amount": "round(min(2000000, credit_amount * 1.80 + 1000))"
+  },
+  "thresholds": {
+    "psi": 0.1,
+    "ks_alpha": 0.05
+  },
+  "drifted_columns": [
+    "age",
+    "bad_risk_probability",
+    "credit_amount"
+  ],
+  "reference_bad_prediction_rate": 0.219,
+  "production_bad_prediction_rate": 0.326,
+  "metrics": [
+    {
+      "column": "duration",
+      "column_type": "numeric",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": 0.0,
+      "ks_p_value": 1.0,
+      "ks_drift_detected": false
+    },
+    {
+      "column": "credit_amount",
+      "column_type": "numeric",
+      "psi": 3.398511,
+      "psi_drift_detected": true,
+      "ks_statistic": 0.487,
+      "ks_p_value": 0.0,
+      "ks_drift_detected": true
+    },
+    {
+      "column": "installment_rate",
+      "column_type": "numeric",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": 0.0,
+      "ks_p_value": 1.0,
+      "ks_drift_detected": false
+    },
+    {
+      "column": "residence_since",
+      "column_type": "numeric",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": 0.0,
+      "ks_p_value": 1.0,
+      "ks_drift_detected": false
+    },
+    {
+      "column": "age",
+      "column_type": "numeric",
+      "psi": 3.886046,
+      "psi_drift_detected": true,
+      "ks_statistic": 0.426,
+      "ks_p_value": 0.0,
+      "ks_drift_detected": true
+    },
+    {
+      "column": "existing_credits",
+      "column_type": "numeric",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": 0.0,
+      "ks_p_value": 1.0,
+      "ks_drift_detected": false
+    },
+    {
+      "column": "dependents",
+      "column_type": "numeric",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": 0.0,
+      "ks_p_value": 1.0,
+      "ks_drift_detected": false
+    },
+    {
+      "column": "bad_risk_probability",
+      "column_type": "numeric",
+      "psi": 0.067381,
+      "psi_drift_detected": false,
+      "ks_statistic": 0.109,
+      "ks_p_value": 1.3599e-05,
+      "ks_drift_detected": true
+    },
+    {
+      "column": "checking_status",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "credit_history",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "purpose",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "savings_status",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "employment",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "personal_status_sex",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "other_debtors",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "property",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "other_installment_plans",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "housing",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "job",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "telephone",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "foreign_worker",
+      "column_type": "categorical",
+      "psi": 0.0,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    },
+    {
+      "column": "predicted_risk",
+      "column_type": "categorical",
+      "psi": 0.058333,
+      "psi_drift_detected": false,
+      "ks_statistic": null,
+      "ks_p_value": null,
+      "ks_drift_detected": null
+    }
+  ]
+}

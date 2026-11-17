@@ -26,9 +26,10 @@ def test_dashboard_exposes_operational_and_drift_metrics(tmp_path: Path) -> None
             "duration_seconds": 1.25,
             "rows_processed": 1000,
             "drift_alert_count": 1,
+            "infrastructure": {"disk_free_gb": 12.5, "process_cpu_seconds": 0.8},
             "drifted_columns": ["age"],
-            "reference_anomaly_rate": 0.05,
-            "production_anomaly_rate": 0.12,
+            "reference_bad_prediction_rate": 0.05,
+            "production_bad_prediction_rate": 0.12,
             "tasks": [
                 {
                     "name": "data_validation",
@@ -58,3 +59,4 @@ def test_dashboard_exposes_operational_and_drift_metrics(tmp_path: Path) -> None
     assert "1.250s" in dashboard
     assert "12.00%" in dashboard
     assert 'id="statusFilter"' in dashboard
+    assert "12.5 GB" in dashboard

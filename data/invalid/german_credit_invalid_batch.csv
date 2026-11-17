@@ -1,0 +1,14 @@
+customer_id,age,sex,job,housing,saving_accounts,checking_account,credit_amount,duration,purpose
+0,17,male,2,own,,little,1169,6,radio/TV
+1,22,unknown,2,own,little,moderate,5951,48,radio/TV
+2,49,male,9,own,little,,2096,12,education
+3,45,male,2,hotel,little,little,7882,42,furniture/equipment
+4,53,male,2,free,invalid,little,4870,24,car
+5,35,male,1,free,,invalid,9055,36,education
+6,53,male,2,own,quite rich,,-500,24,furniture/equipment
+7,35,male,3,rent,little,moderate,6948,0,car
+8,61,male,1,own,rich,,3059,12,unknown
+10,28,male,3,own,little,moderate,5234,30,car
+10,25,female,2,rent,little,moderate,1295,12,car
+11,24,female,2,rent,little,little,4308,48,business
+11,24,female,2,rent,little,little,4308,48,business

@@ -1,4 +1,4 @@
-"""Interface de linha de comando das etapas 1 e 2."""
+"""Interface de linha de comando do pipeline Statlog."""
 
 from __future__ import annotations
 
@@ -57,9 +57,9 @@ def train(paths: ProjectPaths, data_path: Path | None = None) -> dict[str, objec
     metrics = train_baseline(frame, paths.model, paths.metrics)
     LOGGER.info("Modelo salvo em %s", paths.model)
     LOGGER.info(
-        "Anomalias=%d | taxa=%.2f%%",
-        metrics.anomaly_count,
-        metrics.anomaly_rate * 100,
+        "Teste: F1=%.3f | ROC AUC=%.3f",
+        metrics.f1,
+        metrics.roc_auc,
     )
     return metrics.to_dict()
 
@@ -84,9 +84,9 @@ def run_demo(paths: ProjectPaths) -> None:
     metrics = train(paths)
     rejected_rules = demonstrate_rejection(paths)
     LOGGER.info(
-        "Etapa 1 concluída | referência=%s | anomalias=%d | violações bloqueadas=%d",
+        "Etapa 1 concluída | referência=%s | F1=%.3f | violações bloqueadas=%d",
         validation["status"],
-        metrics["anomaly_count"],
+        metrics["f1"],
         rejected_rules,
     )
 
@@ -124,7 +124,7 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     subparsers.add_parser(
-        "prepare", help="Valida o German Credit Data e cria o lote inválido."
+        "prepare", help="Valida o Statlog German Credit e cria o lote inválido."
     )
 
     validate_parser = subparsers.add_parser("validate", help="Valida um CSV pelo contrato.")

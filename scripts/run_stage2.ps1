@@ -9,4 +9,4 @@ uv run pytest
 uv run ruff check .
 
 Write-Host ''
-Write-Host 'Etapa 2 concluída. Abra artifacts/reports/drift_report.html.' -ForegroundColor Green
+Write-Host 'Etapa 2 concluída. Abra artifacts/reports/statlog_drift_report.html.' -ForegroundColor Green

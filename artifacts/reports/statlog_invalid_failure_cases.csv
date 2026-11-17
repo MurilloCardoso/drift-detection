@@ -1,0 +1,15 @@
+schema_context,column,check,check_number,failure_case,index
+Column,age,"in_range(18, 100)",0,17,0
+Column,checking_status,"isin(['A11', 'A12', 'A13', 'A14'])",0,invalid,1
+Column,credit_amount,"in_range(1, 2000000)",0,-500,6
+Column,credit_history,"isin(['A30', 'A31', 'A32', 'A33', 'A34'])",0,invalid,5
+Column,credit_risk,"isin([1, 2])",0,9,2
+Column,duration,"in_range(1, 120)",0,0,7
+Column,housing,"isin(['A151', 'A152', 'A153'])",0,hotel,3
+Column,purpose,"isin(['A40', 'A41', 'A42', 'A43', 'A44', 'A45', 'A46', 'A48', 'A49', 'A410'])",0,unknown,8
+Column,record_id,field_uniqueness,,10,9
+Column,record_id,field_uniqueness,,10,10
+Column,record_id,field_uniqueness,,11,11
+Column,record_id,field_uniqueness,,11,12
+Column,savings_status,"isin(['A61', 'A62', 'A63', 'A64', 'A65'])",0,invalid,4
+DataFrameSchema,statlog_german_credit_contract_v1,linhas exatamente duplicadas,0,False,

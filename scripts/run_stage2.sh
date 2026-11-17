@@ -9,4 +9,4 @@ uv run drift-detect drift
 uv run pytest
 uv run ruff check .
 
-printf '\nEtapa 2 concluída. Abra artifacts/reports/drift_report.html.\n'
+printf '\nEtapa 2 concluída. Abra artifacts/reports/statlog_drift_report.html.\n'

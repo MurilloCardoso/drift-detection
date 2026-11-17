@@ -17,15 +17,15 @@ def generate_invalid_batch(reference: pd.DataFrame) -> pd.DataFrame:
 
     invalid = reference.head(12).copy()
     invalid.loc[0, "age"] = 17
-    invalid.loc[1, "sex"] = "unknown"
-    invalid.loc[2, "job"] = 9
+    invalid.loc[1, "checking_status"] = "invalid"
+    invalid.loc[2, "credit_risk"] = 9
     invalid.loc[3, "housing"] = "hotel"
-    invalid.loc[4, "saving_accounts"] = "invalid"
-    invalid.loc[5, "checking_account"] = "invalid"
+    invalid.loc[4, "savings_status"] = "invalid"
+    invalid.loc[5, "credit_history"] = "invalid"
     invalid.loc[6, "credit_amount"] = -500
     invalid.loc[7, "duration"] = 0
     invalid.loc[8, "purpose"] = "unknown"
-    invalid.loc[9, "customer_id"] = invalid.loc[10, "customer_id"]
+    invalid.loc[9, "record_id"] = invalid.loc[10, "record_id"]
     return pd.concat([invalid, invalid.iloc[[11]]], ignore_index=True)
 
 

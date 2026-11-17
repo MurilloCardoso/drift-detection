@@ -1,0 +1,15 @@
+{
+  "generated_at_utc": "2026-11-16T23:56:42.617165+00:00",
+  "model_type": "LogisticRegression",
+  "contract_status": "passed",
+  "dataset_rows": 1000,
+  "train_rows": 800,
+  "test_rows": 200,
+  "positive_class": 2,
+  "positive_class_meaning": "bad credit risk",
+  "accuracy": 0.78,
+  "balanced_accuracy": 0.709524,
+  "f1": 0.592593,
+  "roc_auc": 0.804048,
+  "random_state": 42
+}

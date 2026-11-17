@@ -19,7 +19,7 @@ from drift_detect.contracts import (
     validate_credit_data,
 )
 
-PREDICTION_COLUMNS = ["anomaly_score", "anomaly_label"]
+PREDICTION_COLUMNS = ["bad_risk_probability", "predicted_risk"]
 PSI_THRESHOLD = 0.1
 KS_ALPHA = 0.05
 
@@ -52,7 +52,7 @@ def simulate_production_drift(reference: pd.DataFrame) -> pd.DataFrame:
 
 
 def score_frame(frame: pd.DataFrame, model_path: Path) -> pd.DataFrame:
-    """Aplica o baseline persistido e retorna rótulo e score de anomalia."""
+    """Aplica o classificador persistido e retorna risco previsto e probabilidade."""
 
     if not model_path.is_file():
         raise FileNotFoundError(f"Modelo baseline não encontrado: {model_path}")
@@ -60,12 +60,12 @@ def score_frame(frame: pd.DataFrame, model_path: Path) -> pd.DataFrame:
     model = joblib.load(model_path)
     features = validated[FEATURE_COLUMNS]
     raw_labels = model.predict(features)
-    scores = model.decision_function(features)
+    scores = model.predict_proba(features)[:, 1]
     return pd.DataFrame(
         {
-            "customer_id": validated["customer_id"].to_numpy(),
-            "anomaly_score": scores,
-            "anomaly_label": np.where(raw_labels == -1, "anomaly", "inlier"),
+            "record_id": validated["record_id"].to_numpy(),
+            "bad_risk_probability": scores,
+            "predicted_risk": np.where(raw_labels == 1, "bad", "good"),
         }
     )
 
@@ -108,7 +108,7 @@ def calculate_drift_metrics(
     """Calcula PSI e KS com limites explícitos e resultados serializáveis."""
 
     metrics: list[DriftMetric] = []
-    for column in NUMERIC_FEATURES + ["anomaly_score"]:
+    for column in NUMERIC_FEATURES + ["bad_risk_probability"]:
         psi = _numeric_psi(reference[column], current[column])
         ks = ks_2samp(reference[column].dropna(), current[column].dropna())
         metrics.append(
@@ -122,7 +122,7 @@ def calculate_drift_metrics(
                 ks_drift_detected=bool(ks.pvalue < KS_ALPHA),
             )
         )
-    for column in CATEGORICAL_FEATURES + ["anomaly_label"]:
+    for column in CATEGORICAL_FEATURES + ["predicted_risk"]:
         psi = _categorical_psi(reference[column], current[column])
         metrics.append(
             DriftMetric(
@@ -150,14 +150,14 @@ def _evidently_report(
         ) from error
 
     definition = DataDefinition(
-        id_column="customer_id",
-        numerical_columns=NUMERIC_FEATURES + ["anomaly_score"],
-        categorical_columns=CATEGORICAL_FEATURES + ["anomaly_label"],
+        id_column="record_id",
+        numerical_columns=NUMERIC_FEATURES + ["bad_risk_probability"],
+        categorical_columns=CATEGORICAL_FEATURES + ["predicted_risk"],
     )
     reference_dataset = Dataset.from_pandas(reference, data_definition=definition)
     current_dataset = Dataset.from_pandas(current, data_definition=definition)
     report = Report(
-        [DataDriftPreset(method="psi", threshold=PSI_THRESHOLD, drift_share=0.1)],
+        [DataDriftPreset(method="psi", threshold=PSI_THRESHOLD, drift_share=0.05)],
         include_tests=True,
     )
     snapshot = report.run(current_dataset, reference_dataset)
@@ -182,8 +182,10 @@ def run_drift_analysis(
     reference_predictions = score_frame(validated_reference, model_path)
     production_predictions = score_frame(production, model_path)
 
-    reference_analysis = validated_reference.merge(reference_predictions, on="customer_id")
-    production_analysis = production.merge(production_predictions, on="customer_id")
+    reference_analysis = validated_reference.merge(reference_predictions, on="record_id")
+    production_analysis = production.merge(production_predictions, on="record_id")
+    reference_analysis = reference_analysis.drop(columns="credit_risk")
+    production_analysis = production_analysis.drop(columns="credit_risk")
     metrics = calculate_drift_metrics(reference_analysis, production_analysis)
 
     production_path.parent.mkdir(parents=True, exist_ok=True)
@@ -212,11 +214,11 @@ def run_drift_analysis(
         },
         "thresholds": {"psi": PSI_THRESHOLD, "ks_alpha": KS_ALPHA},
         "drifted_columns": detected,
-        "reference_anomaly_rate": round(
-            float((reference_predictions["anomaly_label"] == "anomaly").mean()), 6
+        "reference_bad_prediction_rate": round(
+            float((reference_predictions["predicted_risk"] == "bad").mean()), 6
         ),
-        "production_anomaly_rate": round(
-            float((production_predictions["anomaly_label"] == "anomaly").mean()), 6
+        "production_bad_prediction_rate": round(
+            float((production_predictions["predicted_risk"] == "bad").mean()), 6
         ),
         "metrics": [asdict(metric) for metric in metrics],
     }

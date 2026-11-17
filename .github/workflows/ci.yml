@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  stage-1:
+  quality-and-evidence:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,8 +20,14 @@ jobs:
       - run: uv run ruff check .
       - run: uv run pytest
       - run: uv run drift-detect demo
+      - run: uv run drift-detect drift
+      - run: uv run drift-detect monitor
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: stage-1-evidence
-          path: artifacts/reports/
+          name: pipeline-evidence
+          path: |
+            artifacts/reports/
+            artifacts/observability/
+            artifacts/predictions/
 

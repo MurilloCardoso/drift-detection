@@ -10,7 +10,7 @@ from drift_detect.contracts import validate_csv
 
 @pytest.fixture(scope="session")
 def dataset_path() -> Path:
-    return Path(__file__).parents[1] / "dataset" / "german_credit_data.csv"
+    return Path(__file__).parents[1] / "dataset" / "statlog" / "german.data"
 
 
 @pytest.fixture(scope="session")

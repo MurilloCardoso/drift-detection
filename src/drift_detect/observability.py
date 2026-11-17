@@ -8,6 +8,7 @@ from __future__ import annotations
 import html
 import json
 import logging
+import shutil
 import time
 import uuid
 from datetime import UTC, datetime
@@ -94,6 +95,7 @@ def run_monitored_pipeline(paths: ProjectPaths) -> dict[str, object]:
     run_id = uuid.uuid4().hex[:12]
     started_at = _utc_now()
     pipeline_started = time.perf_counter()
+    cpu_started = time.process_time()
     stage_started = pipeline_started
     tasks: list[dict[str, object]] = []
     current_stage = "validation"
@@ -173,8 +175,8 @@ def run_monitored_pipeline(paths: ProjectPaths) -> dict[str, object]:
                 "rows_processed": drift["production_rows"],
                 "drift_alert_count": len(drifted_columns),
                 "drifted_columns": drifted_columns,
-                "reference_anomaly_rate": drift["reference_anomaly_rate"],
-                "production_anomaly_rate": drift["production_anomaly_rate"],
+                "reference_bad_prediction_rate": drift["reference_bad_prediction_rate"],
+                "production_bad_prediction_rate": drift["production_bad_prediction_rate"],
                 "drift_metrics": drift["metrics"],
             }
         )
@@ -211,6 +213,10 @@ def run_monitored_pipeline(paths: ProjectPaths) -> dict[str, object]:
     finally:
         record["finished_at_utc"] = _utc_now().isoformat()
         record["duration_seconds"] = _duration(pipeline_started)
+        record["infrastructure"] = {
+            "disk_free_gb": round(shutil.disk_usage(paths.root).free / 1024**3, 3),
+            "process_cpu_seconds": round(time.process_time() - cpu_started, 6),
+        }
         _append_json_line(paths.monitoring_history, record)
         render_monitoring_dashboard(
             load_monitoring_history(paths.monitoring_history), paths.monitoring_dashboard
@@ -236,6 +242,9 @@ def render_monitoring_dashboard(history: list[dict[str, Any]], output_path: Path
     success_rate = successful / len(history) if history else 0.0
     latest_status = str(latest.get("status", "sem execuções"))
     latest_columns = latest.get("drifted_columns", [])
+    infrastructure = latest.get("infrastructure", {})
+    if not isinstance(infrastructure, dict):
+        infrastructure = {}
     if not isinstance(latest_columns, list):
         latest_columns = []
 
@@ -310,10 +319,11 @@ h1{{margin:0 0 6px;font-size:30px}} h2{{margin:28px 0 12px;font-size:19px}} .sub
 <div class="card"><div class="label">Latência total</div><div class="value">{float(latest.get('duration_seconds', 0)):.2f}s</div></div>
 <div class="card"><div class="label">Alertas de drift</div><div class="value">{html.escape(str(latest.get('drift_alert_count', 0)))}</div></div>
 </section>
+<p class="note">Infraestrutura local: espaço livre {html.escape(str(infrastructure.get('disk_free_gb', '-')))} GB · tempo de CPU do processo {html.escape(str(infrastructure.get('process_cpu_seconds', '-')))} s.</p>
 <h2>Última execução</h2><div class="table-wrap"><table><thead><tr><th>Tarefa</th><th>Status</th><th>Latência</th><th>Volume</th></tr></thead><tbody>{''.join(task_rows) or '<tr><td colspan="4">Sem dados</td></tr>'}</tbody></table></div>
 <h2>Alertas estatísticos</h2><div class="table-wrap"><table><thead><tr><th>Feature</th><th>PSI</th><th>KS p-value</th><th>Estado</th></tr></thead><tbody>{''.join(metric_rows) or '<tr><td colspan="4">Sem dados</td></tr>'}</tbody></table></div>
 <h2>Histórico (20 execuções)</h2><div class="toolbar"><label>Status: <select id="statusFilter"><option value="all">todos</option><option value="success">sucesso</option><option value="failed">falha</option></select></label></div><div class="table-wrap"><table><thead><tr><th>Run ID</th><th>Início UTC</th><th>Status</th><th>Latência</th><th>Volume</th><th>Alertas</th><th>Features</th></tr></thead><tbody id="runHistory">{''.join(run_rows) or '<tr><td colspan="7">Sem execuções</td></tr>'}</tbody></table></div>
-<p class="note">Taxas de anomalia: referência {_format_rate(latest.get('reference_anomaly_rate'))} · produção {_format_rate(latest.get('production_anomaly_rate'))}. Features em alerta: {html.escape(', '.join(map(str, latest_columns)) or 'nenhuma')}.</p>
+<p class="note">Predições de risco ruim: referência {_format_rate(latest.get('reference_bad_prediction_rate'))} · produção {_format_rate(latest.get('production_bad_prediction_rate'))}. Features em alerta: {html.escape(', '.join(map(str, latest_columns)) or 'nenhuma')}.</p>
 </main><script>
 const filter = document.getElementById('statusFilter');
 filter.addEventListener('change', () => document.querySelectorAll('#runHistory tr[data-status]').forEach(row => {{

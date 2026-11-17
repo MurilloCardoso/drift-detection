@@ -7,4 +7,4 @@ export UV_CACHE_DIR="$SCRIPT_DIR/../.uv-cache"
 uv sync --extra dev
 uv run drift-detect monitor
 
-echo "Etapa 3 concluida. Abra artifacts/reports/monitoring_dashboard.html"
+echo "Etapa 3 concluida. Abra artifacts/reports/statlog_monitoring_dashboard.html"
